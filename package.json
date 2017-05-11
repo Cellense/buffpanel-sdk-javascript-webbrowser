@@ -1,0 +1,23 @@
+{
+  "name": "buffpanel-sdk-javascript-webbrowser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "uglifyjs --compress --mangle -- index.js > index.min.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cellense/buffpanel-sdk-javascript-webbrowser.git"
+  },
+  "author": "Osama Hassanein <player1os@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cellense/buffpanel-sdk-javascript-webbrowser/issues"
+  },
+  "homepage": "https://github.com/Cellense/buffpanel-sdk-javascript-webbrowser#readme",
+  "devDependencies": {
+    "uglify-js": "^3.0.3"
+  }
+}
