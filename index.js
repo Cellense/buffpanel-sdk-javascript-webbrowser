@@ -16,5 +16,5 @@ var BuffPanelSdkTrack = function (gameToken) {
 
 	var image = document.createElement('img');
 	image.onload = function() {};
-	image.src = 'http://buffpanel.com/track_ga/' + gameToken + '?tid=' + trackingId + '&cid=' + clientId;
+	image.src = 'http://buffpanel.com/api/ga_event/' + gameToken + '?tid=' + trackingId + '&cid=' + clientId;
 };
