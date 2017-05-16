@@ -132,8 +132,8 @@
 		}
 	};
 
-	// Define the on load callback.
-	_window.onload = function () {
+	// Define the initialization callback.
+	function initialize() {
 		// Collect all available data.
 		buffPanelData.collectData();
 		googleAnalyticsData.collectData();
@@ -162,4 +162,11 @@
 		// Expose the sdk interface.
 		_window.BuffPanelSdk = processRequest;
 	};
+
+	// Ensure the initialization is triggered.
+	if (_document.readyState === "complete") {
+		initialize()
+	} else {
+		_window.onload = initialize
+	}
 })(window, document, console);
