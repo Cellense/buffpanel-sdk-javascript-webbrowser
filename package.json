@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@player1os/config": "^1.1.6",
-    "express": "^4.15.2"
+    "express": "^4.15.2",
+    "letsencrypt-express": "^2.0.6"
   }
 }
