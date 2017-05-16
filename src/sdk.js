@@ -151,6 +151,7 @@
 		_window.BuffPanelSdk.q.forEach(function (queuedEntry) {
 			processRequest(queuedEntry.type, queuedEntry.data);
 		});
+		delete _window.BuffPanelSdk.q;
 
 		// Add an output log method.
 		processRequest.outputLog = function () {
@@ -165,8 +166,8 @@
 
 	// Ensure the initialization is triggered.
 	if (_document.readyState === "complete") {
-		initialize()
+		initialize();
 	} else {
-		_window.onload = initialize
+		_window.onload = initialize;
 	}
 })(window, document, console);
