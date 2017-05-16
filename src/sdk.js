@@ -36,14 +36,22 @@
 		trackingId: null,
 		clientId: null,
 		collectData: function () {
-			if (!_window.ga) {
+			if (!_window.ga || !_window.ga.getAll) {
 				return;
 			}
 
-			_window.ga(function (tracker) {
-				googleAnalyticsData.trackingId = tracker.get('trackingId');
-				googleAnalyticsData.clientId = tracker.get('clientId');
-			});
+			var trackers = _window.ga.getAll();
+			if (!trackers || !trackers[0]) {
+				return;
+			}
+
+			var tracker = trackers[0];
+			if (!tracker.get) {
+				return;
+			}
+
+			googleAnalyticsData.trackingId = tracker.get('trackingId');
+			googleAnalyticsData.clientId = tracker.get('clientId');
 
 			this.isLoaded = !!this.trackingId && !!this.clientId;
 		}
