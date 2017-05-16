@@ -10,8 +10,10 @@ const path = require('path')
 // Initialize the app.
 const app = express()
 
-// Expose the hosted files.
-app.use(express.static(path.join(config.APP_ROOT_PATH, 'build', 'browser')))
+// Redirect to the hosted files.
+app.use((req, res) => {
+	res.status(303).set('Location', config.APP_REDIRECT_DESTINATION).send()
+})
 
 // Initialize the http server.
 app.listen(config.APP_HTTP_PORT, config.APP_HTTP_IP, (err) => {
