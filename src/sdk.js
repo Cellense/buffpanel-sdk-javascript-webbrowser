@@ -65,7 +65,7 @@
 	};
 
 	// Define the internal properties.
-	var interal = {
+	var internal = {
 		urlBase: 'http://buffpanel.com/api/',
 		log: [],
 		sendRequest: function (url) {
@@ -73,14 +73,14 @@
 
 			var image = _document.createElement('img');
 			image.onload = function () {
-				interal.log.push({
+				internal.log.push({
 					success: true,
 					data: date,
 					url: url
 				});
 			};
 			image.onerror = function (err) {
-				interal.log.push({
+				internal.log.push({
 					success: false,
 					data: date,
 					url: url,
@@ -120,7 +120,7 @@
 				return;
 			}
 
-			internal.sendRequest(interal.urlBase + 'tracking_data?' + paramNames.map(function (paramName) {
+			internal.sendRequest(internal.urlBase + 'tracking_data?' + paramNames.map(function (paramName) {
 				return paramName + '=' + params[paramName];
 			}).join('&'));
 		},
@@ -154,7 +154,7 @@
 
 		// Add an output log method.
 		processRequest.outputLog = function () {
-			interal.log.forEach(function (logEntry) {
+			internal.log.forEach(function (logEntry) {
 				_console.log(logEntry);
 			});
 		};
