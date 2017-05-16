@@ -9,5 +9,9 @@ Thumbs.db
 node_modules/*
 npm-debug.log*
 
+# Configuration files.
+.env
+pm2.json
+
 # Build generated files.
-index.min.js
+build/*
