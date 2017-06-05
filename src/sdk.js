@@ -1,136 +1,213 @@
 (function (_window, _document, _console) {
 	// Verify whether the library was loaded correctly.
 	if (!_window.BuffPanelSdk) {
-		throw new Error('The BuffPanel SDK was not loaded correctly.');
+		throw new Error('The BuffPanel SDK was not loaded correctly.')
 	}
 
 	// TODO: Bundle an external library.
-	// Define utility functions.
-	function getQueryParameterByName(name) {
-		var url = _window.location.href;
-		name = name.replace(/[\[\]]/g, '\\$&');
+	// Define a function to parse a single query parameters value, when given its name.
+	function getQueryParameterByName(url, name) {
+		name = name.replace(/[\[\]]/g, '\\$&')
 
-		var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
-		var results = regex.exec(url);
+		var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)')
+		var results = regex.exec(url)
 		if (!results || !results[2]) {
-			return null;
+			return null
 		}
 
-		return decodeURIComponent(results[2].replace(/\+/g, ' '));
+		return decodeURIComponent(results[2].replace(/\+/g, ' '))
+	}
+
+	// Define a general function for sending async http requests.
+	function sendHttpRequest(options) {
+		// Collect the parameters.
+		var params = {
+			url: options.url || null,
+			method: options.method || null,
+			headers: options.headers || {},
+			callback: options.callback || null,
+			payload: options.payload || null,
+		}
+
+		// Check if the required parameters are present.
+		if (params.url === null) {
+			throw new Error('No url was supplied.')
+		}
+		if (params.method === null) {
+			throw new Error('No method was supplied.')
+		}
+
+		// Initialize the xhr object.
+		var xhr = new XMLHttpRequest()
+
+		// Set headers if they are supplied.
+		Object.keys(params.headers).forEach((headerName) => {
+			xhr.setRequestHeader(headerName, headerName[headers])
+		})
+
+		// Setup the callback if available.
+		if (params.callback) {
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState === 4) {
+					params.callback(xhr)
+				}
+			}
+		}
+		
+		// Open the connection.
+		xhr.open(params.method, params.url, true)
+
+		// Send the request with the payload.
+		xhr.send(params.payload)
 	}
 
 	// Store BuffPanel specific data.
 	var buffPanelData = {
-		isLoaded: false,
 		gameToken: null,
+		campaignToken: null,
 		clickEventKey: null,
+		isLoaded: function () {
+			// Check if all conditions are met to consider the module loaded.
+			return !!this.gameToken && (!!this.campaignToken || !!this.clickEventKey)
+		},
 		collectData: function () {
-			this.clickEventKey = getQueryParameterByName('buffpanel_cek');
-			this.isLoaded = !!this.gameToken && !!this.clickEventKey;
+			// Attempt to extract the click event key from the current
+			this.clickEventKey = getQueryParameterByName(_window.location.href, 'buffpanel_cek')
 		}
-	};
+	}
 
 	// Store Google Analytics specific data.
 	var googleAnalyticsData = {
-		isLoaded: false,
 		trackingId: null,
 		clientId: null,
+		isLoaded: function () {
+			// Check if all conditions are met to consider the module loaded.
+			return !!this.trackingId && !!this.clientId
+		},
 		collectData: function () {
 			if (!_window.ga || !_window.ga.getAll) {
-				return;
+				return
 			}
 
-			var trackers = _window.ga.getAll();
+			var trackers = _window.ga.getAll()
 			if (!trackers || !trackers[0]) {
-				return;
+				return
 			}
 
-			var tracker = trackers[0];
+			var tracker = trackers[0]
 			if (!tracker.get) {
-				return;
+				return
 			}
 
-			googleAnalyticsData.trackingId = tracker.get('trackingId');
-			googleAnalyticsData.clientId = tracker.get('clientId');
-
-			this.isLoaded = !!this.trackingId && !!this.clientId;
+			this.trackingId = tracker.get('trackingId')
+			this.clientId = tracker.get('clientId')
 		}
-	};
+	}
 
 	// Store Facebook Pixel specific data.
 	var facebookPixelData = {
-		isLoaded: false,
 		pixelId: null,
+		isLoaded: function () {
+			return !!this.pixelId
+		},
 		collectData: function () {
 			if (!_window.fbq || !_window.fbq.loaded) {
-				return;
+				return
 			}
 
-			this.pixelId = Object.keys(_window.fbq.instance.pixelsByID)[0];
-
-			this.isLoaded = !!this.pixelId;
+			this.pixelId = Object.keys(_window.fbq.instance.pixelsByID)[0]
 		}
-	};
+	}
 
 	// Define the internal properties.
 	var internal = {
+		redirectHostname: 'redirect.localhost:8080',
 		urlBase: 'http://buffpanel.com/api/',
 		log: [],
 		sendRequest: function (url) {
-			var date = new Date();
+			var date = new Date()
 
-			var image = _document.createElement('img');
+			var image = _document.createElement('img')
 			image.onload = function () {
 				internal.log.push({
 					success: true,
 					data: date,
 					url: url
-				});
-			};
+				})
+			}
 			image.onerror = function (err) {
 				internal.log.push({
 					success: false,
 					data: date,
 					url: url,
 					err: err
-				});
-			};
-			image.src = url;
+				})
+			}
+			image.src = url
 		},
-	};
+	}
 
 	// Define library methods.
 	var methods = {
 		initialize: function (gameToken) {
-			buffPanelData.gameToken = gameToken;
-			buffPanelData.isLoaded = buffPanelData.gameToken && buffPanelData.clickEventKey;
+			buffPanelData.gameToken = gameToken
+		},
+		setCamapignToken: function (campaignToken) {
+			buffPanelData.campaignToken = campaignToken
 		},
 		sendTrackingData: function () {
-			var params = {};
+			var params = {}
 
-			if (!buffPanelData.isLoaded) {
-				return;
-			}
-			params.bp_gt = buffPanelData.gameToken;
-			params.bp_cek = buffPanelData.clickEventKey;
-
-			if (googleAnalyticsData.isLoaded) {
-				params.ga_tid = googleAnalyticsData.trackingId;
-				params.ga_cid = googleAnalyticsData.clientId;
+			if (!buffPanelData.isLoaded()) {
+				return
 			}
 
-			if (facebookPixelData.isLoaded) {
-				params.fb_pid = facebookPixelData.pixelId;
+			if (buffPanelData.clickEventKey) {
+				// Execute the main send directly.
+				send()
+			} else {
+				// Attempt to create a click event.
+				sendHttpRequest({
+					url: `http://${buffPanelData.gameToken}.${internal.redirectHostname}/${buffPanelData.campaignToken}`,
+					method: 'GET',
+					callback: clickEventCallback,
+				})
 			}
 
-			var paramNames = Object.keys(params);
-			if (paramNames.length === 2) {
-				return;
+			function clickEventCallback(xhr) {
+				// Verify that a click event key is sent.
+				buffPanelData.clickEventKey = getQueryParameterByName(xhr.response, 'buffpanel_cek')
+				if (buffPanelData.clickEventKey === null) {
+					return
+				}
+
+				// Execute the main send directly.
+				send()
 			}
 
-			internal.sendRequest(internal.urlBase + 'tracking_data?' + paramNames.map(function (paramName) {
-				return paramName + '=' + params[paramName];
-			}).join('&'));
+			function send() {
+				params.bp_gt = buffPanelData.gameToken
+				params.bp_cek = buffPanelData.clickEventKey
+
+				if (googleAnalyticsData.isLoaded()) {
+					params.ga_tid = googleAnalyticsData.trackingId
+					params.ga_cid = googleAnalyticsData.clientId
+				}
+
+				if (facebookPixelData.isLoaded()) {
+					params.fb_pid = facebookPixelData.pixelId
+				}
+
+				var paramNames = Object.keys(params)
+/*
+				if (paramNames.length === 2) {
+					return
+				}
+*/
+				internal.sendRequest(internal.urlBase + 'tracking_data?' + paramNames.map(function (paramName) {
+					return paramName + '=' + params[paramName]
+				}).join('&'))
+			}
 		},
 		trackClickEvent: function (data) {
 			// TODO: Implement.
@@ -138,44 +215,44 @@
 		trackRunEvent: function (data) {
 			// TODO: Implement.
 		}
-	};
+	}
 
 	// Define the initialization callback.
 	function initialize() {
 		// Collect all available data.
-		buffPanelData.collectData();
-		googleAnalyticsData.collectData();
-		facebookPixelData.collectData();
+		buffPanelData.collectData()
+		googleAnalyticsData.collectData()
+		facebookPixelData.collectData()
 
 		// Define the request processor.
 		function processRequest(type, data) {
 			if (!(type in methods)) {
-				throw new Error('The method "' + type + '" is not supported.');
+				throw new Error('The method "' + type + '" is not supported.')
 			}
-			methods[type](data);
-		};
+			methods[type](data)
+		}
 
 		// Process any queued requests.
 		_window.BuffPanelSdk.q.forEach(function (queuedEntry) {
-			processRequest(queuedEntry.type, queuedEntry.data);
-		});
-		delete _window.BuffPanelSdk.q;
+			processRequest(queuedEntry.type, queuedEntry.data)
+		})
+		delete _window.BuffPanelSdk.q
 
 		// Add an output log method.
 		processRequest.outputLog = function () {
 			internal.log.forEach(function (logEntry) {
-				_console.log(logEntry);
-			});
-		};
+				_console.log(logEntry)
+			})
+		}
 
 		// Expose the sdk interface.
-		_window.BuffPanelSdk = processRequest;
-	};
+		_window.BuffPanelSdk = processRequest
+	}
 
 	// Ensure the initialization is triggered.
 	if (_document.readyState === "complete") {
-		initialize();
+		initialize()
 	} else {
-		_window.onload = initialize;
+		_window.onload = initialize
 	}
-})(window, document, console);
+})(window, document, console)
