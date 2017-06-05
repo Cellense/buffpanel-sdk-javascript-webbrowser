@@ -26,7 +26,7 @@
 		clickEventKey: null,
 		collectData: function () {
 			this.clickEventKey = getQueryParameterByName('buffpanel_cek');
-			this.isLoaded = !!this.gameToken && !!this.clickEventKey;
+			this.isLoaded = !!this.gameToken;
 		}
 	};
 
@@ -103,7 +103,7 @@
 	var methods = {
 		initialize: function (gameToken) {
 			buffPanelData.gameToken = gameToken;
-			buffPanelData.isLoaded = buffPanelData.gameToken && buffPanelData.clickEventKey;
+			buffPanelData.isLoaded = buffPanelData.gameToken;
 		},
 		sendTrackingData: function () {
 			var params = {};
@@ -112,7 +112,7 @@
 				return;
 			}
 			params.bp_gt = buffPanelData.gameToken;
-			params.bp_cek = buffPanelData.clickEventKey;
+			params.bp_cek = buffPanelData.clickEventKey || 47;
 
 			if (googleAnalyticsData.isLoaded) {
 				params.ga_tid = googleAnalyticsData.trackingId;
