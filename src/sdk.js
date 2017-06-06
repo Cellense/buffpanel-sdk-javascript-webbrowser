@@ -17,7 +17,7 @@
 
 		return decodeURIComponent(results[2].replace(/\+/g, ' '))
 	}
-
+/*
 	// Define a general function for sending async http requests.
 	function sendHttpRequest(options) {
 		// Collect the parameters.
@@ -60,11 +60,11 @@
 		// Send the request with the payload.
 		xhr.send(params.payload)
 	}
-
+*/
 	// Store BuffPanel specific data.
 	var buffPanelData = {
 		gameToken: null,
-		campaignToken: null,
+		campaignToken: 'test_1',
 		clickEventKey: null,
 		isLoaded: function () {
 			// Check if all conditions are met to consider the module loaded.
@@ -121,7 +121,7 @@
 
 	// Define the internal properties.
 	var internal = {
-		redirectHostname: 'redirect.localhost:8080',
+		redirectHostname: 'trbt.it',
 		urlBase: 'http://buffpanel.com/api/',
 		log: [],
 		sendRequest: function (url) {
@@ -161,53 +161,33 @@
 			if (!buffPanelData.isLoaded()) {
 				return
 			}
+			params.bp_gt = buffPanelData.gameToken
 
-			if (buffPanelData.clickEventKey) {
-				// Execute the main send directly.
-				send()
-			} else {
+			if (!buffPanelData.clickEventKey) {
 				// Attempt to create a click event.
-				sendHttpRequest({
-					url: `http://${buffPanelData.gameToken}.${internal.redirectHostname}/${buffPanelData.campaignToken}`,
-					method: 'GET',
-					callback: clickEventCallback,
-				})
-			}
-
-			function clickEventCallback(xhr) {
-				// Verify that a click event key is sent.
-				buffPanelData.clickEventKey = getQueryParameterByName(xhr.response, 'buffpanel_cek')
-				if (buffPanelData.clickEventKey === null) {
-					return
-				}
-
-				// Execute the main send directly.
-				send()
-			}
-
-			function send() {
-				params.bp_gt = buffPanelData.gameToken
+				internal.sendRequest('http://' + buffPanelData.gameToken + '.' + internal.redirectHostname + '/' + buffPanelData.campaignToken)
+				params.bp_cek = '47'
+			} else {
 				params.bp_cek = buffPanelData.clickEventKey
-
-				if (googleAnalyticsData.isLoaded()) {
-					params.ga_tid = googleAnalyticsData.trackingId
-					params.ga_cid = googleAnalyticsData.clientId
-				}
-
-				if (facebookPixelData.isLoaded()) {
-					params.fb_pid = facebookPixelData.pixelId
-				}
-
-				var paramNames = Object.keys(params)
-/*
-				if (paramNames.length === 2) {
-					return
-				}
-*/
-				internal.sendRequest(internal.urlBase + 'tracking_data?' + paramNames.map(function (paramName) {
-					return paramName + '=' + params[paramName]
-				}).join('&'))
 			}
+
+			if (googleAnalyticsData.isLoaded()) {
+				params.ga_tid = googleAnalyticsData.trackingId
+				params.ga_cid = googleAnalyticsData.clientId
+			}
+
+			if (facebookPixelData.isLoaded()) {
+				params.fb_pid = facebookPixelData.pixelId
+			}
+
+			var paramNames = Object.keys(params)
+			if (paramNames.length === 2) {
+				return
+			}
+
+			internal.sendRequest(internal.urlBase + 'tracking_data?' + paramNames.map(function (paramName) {
+				return paramName + '=' + params[paramName]
+			}).join('&'))
 		},
 		trackClickEvent: function (data) {
 			// TODO: Implement.
@@ -250,7 +230,7 @@
 	}
 
 	// Ensure the initialization is triggered.
-	if (_document.readyState === "complete") {
+	if (_document.readyState === 'complete') {
 		initialize()
 	} else {
 		_window.onload = initialize
