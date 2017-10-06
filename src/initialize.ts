@@ -1,3 +1,4 @@
+// Load app modules.
 import * as storage from '.../src/storage'
 import * as utility from '.../src/utility'
 
@@ -18,7 +19,7 @@ export const googleAnalytics = () => {
 		return
 	}
 
-	const trackers = googleAnalyticsObj.getAll();
+	const trackers = googleAnalyticsObj.getAll()
 	if (!trackers) {
 		return
 	}
@@ -32,8 +33,8 @@ export const googleAnalytics = () => {
 		return
 	}
 
-	storage.google_analytics.tracking_id = tracker.get('trackingId')
-	storage.google_analytics.client_id = tracker.get('clientId')
+	storage.googleAnalytics.tracking_id = tracker.get('trackingId')
+	storage.googleAnalytics.client_id = tracker.get('clientId')
 }
 
 export const facebookPixel = () => {
@@ -51,7 +52,7 @@ export const facebookPixel = () => {
 		return
 	}
 
-	storage.facebook_pixel.pixel_id = Object.keys(instance.pixelsByID)[0]
+	storage.facebookPixel.pixel_id = Object.keys(instance.pixelsByID)[0]
 }
 
 export default () => {

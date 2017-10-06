@@ -2,8 +2,7 @@
 import config from '@player1os/config'
 
 // Load npm modules.
-import * as fse from 'fs-extra'
-import * as webpack from 'webpack'
+import * as UglifyJSPlugin from 'uglifyjs-webpack-plugin'
 
 // Load node modules.
 import * as path from 'path'
@@ -40,6 +39,9 @@ export default {
 			'.js',
 		],
 	},
+	plugins: [
+		new UglifyJSPlugin(),
+	],
 	// Specify that a sourcemap should be created for the outputted bundle.
 	devtool: 'source-map',
 }

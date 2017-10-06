@@ -1,37 +1,94 @@
-import { sender_log as senderLogStorage } from '.../src/storage'
-
 export const getQueryParameterByName = (name) => {
-	var url = window.location.href
-	name = name.replace(/[\[\]]/g, '\\$&')
+	const token = name.replace(/[\[\]]/g, '\\$&')
+	const regex = new RegExp(`[?&]${token}(=([^&#]*)|&|#|$)`)
 
-	var regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`)
-	var results = regex.exec(url)
+	const results = regex.exec(window.location.href)
 	if (!results || !results[2]) {
 		return null
 	}
 
-	return decodeURIComponent(results[2].replace(/\+/g, ' '));
+	return decodeURIComponent(results[2].replace(/\+/g, ' '))
 }
 
-export const sendRequestImg = (url) => {
-	const date = new Date()
-
+export const sendRequestImg = (
+	url: string,
+	callback?: (err?: object) => void,
+) => {
 	const image = document.createElement('img')
+	if (!image) {
+		if (callback) {
+			callback(new Error('Img element not supported.'))
+		}
+		return
+	}
+
 	image.onload = () => {
-		senderLogStorage.push({
-			success: true,
-			date,
-			url,
-		})
+		if (callback) {
+			callback()
+		}
 	}
 	image.onerror = (err) => {
-		senderLogStorage.push({
-			success: false,
-			date,
-			url,
-			err,
-		})
+		if (callback) {
+			callback(err)
+		}
 	}
 
 	image.src = url
+}
+
+export const sendRequestXhr = (
+	url: string,
+	options: {
+		method?: string,
+		headers?: object,
+		user?: string,
+		password?: string,
+		payload?: object,
+	} = {},
+	callback?: (xhr: XMLHttpRequest | null, err?: Error) => void,
+) => {
+	if (!XMLHttpRequest) {
+		if (callback) {
+			callback(null, new Error('XMLHttpRequest object not supported.'))
+		}
+		return
+	}
+	if (!JSON) {
+		if (callback) {
+			callback(null, new Error('JSON object not supported.'))
+		}
+		return
+	}
+
+	const method = options.method
+		? options.method
+		: 'POST'
+	const headers = options.headers
+		? options.headers
+		: {}
+	const payload = options.payload
+		? JSON.stringify(options.payload)
+		: undefined
+
+	const xhr = new XMLHttpRequest()
+
+	Object.keys(headers).forEach((headerName) => {
+		xhr.setRequestHeader(headerName, headers[headerName])
+	})
+	if (payload) {
+		xhr.setRequestHeader('Content-type', 'application/json')
+	}
+
+	xhr.onreadystatechange = () => {
+		if (xhr.readyState === XMLHttpRequest.DONE) {
+			if (callback) {
+				callback(xhr, xhr.status === 0
+					? new Error('Response was not recieved.')
+					: undefined)
+			}
+		}
+	}
+
+	xhr.open(method, url, true, options.user, options.password)
+	xhr.send(payload)
 }
