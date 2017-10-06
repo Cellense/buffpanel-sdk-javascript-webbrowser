@@ -8,14 +8,14 @@
   },
   "scripts": {
     "build": "uglifyjs --compress --mangle -- src/sdk.js > dist/web_sdk/sdk.js",
-    "build:create": "mkdir -p dist/web_sdk",
+    "deploy": "git checkout . && git checkout master && git pull && npm i && mkdir -p dist/web_sdk && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Cellense/buffpanel-sdk-javascript-webbrowser.git"
   },
-  "author": "Osama Hassanein <osama.hassanein@buffpanel.com>",
+  "author": "Osama Hassanein <osama.hassanein@cellense.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Cellense/buffpanel-sdk-javascript-webbrowser/issues"
