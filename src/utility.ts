@@ -33,8 +33,10 @@ export const sendRequestImg = (
 	// Set an event callback for the load and error events.
 	const eventCallback = (err?: object) => {
 		if (callback === undefined) {
-			throw err
-		} else if (err !== undefined) {
+			if (err !== undefined) {
+				throw err
+			}
+		} else {
 			callback(err)
 		}
 	}
@@ -107,8 +109,10 @@ export const sendRequestXhr = (
 			: undefined
 
 		if (callback === undefined) {
-			throw err
-		} else if (err !== undefined) {
+			if (err !== undefined) {
+				throw err
+			}
+		} else {
 			callback(xhr, err)
 		}
 	}

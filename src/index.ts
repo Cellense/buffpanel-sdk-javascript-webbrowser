@@ -14,10 +14,12 @@ const startup = () => {
 	populate()
 
 	// Process any queued requests.
-	main.q.forEach((queuedEntry) => {
-		action(queuedEntry.name, queuedEntry.data)
-	})
-	delete main.q
+	if ('q' in main) {
+		main.q.forEach((queuedEntry) => {
+			action(queuedEntry.name, queuedEntry.data)
+		})
+		delete main.q
+	}
 
 	// Expose the sdk interface.
 	window['BuffPanelSdk'] = action
