@@ -1,24 +1,6 @@
-// // Load app modules.
-// import * as constant from '.../src/constant'
-// import * as storage from '.../src/storage'
-// import * as utility from '.../src/utility'
-
-// // Define the internal properties.
-// var internal = {
-// 	urlBase: `'https://${constant}`,
-// }
-
 // Load app modules.
 import action from '.../src/action'
 import initialize from '.../src/initialize'
-
-// Define the request processor.
-const processAction = (name: string, data: any) => {
-	if (!(name in action)) {
-		throw new Error(`The method "${name}" is not supported.`)
-	}
-	action[name](data)
-}
 
 // Define the initialization callback.
 const startup = () => {
@@ -33,12 +15,12 @@ const startup = () => {
 
 	// Process any queued requests.
 	main.q.forEach((queuedEntry) => {
-		processAction(queuedEntry.name, queuedEntry.data)
+		action(queuedEntry.name, queuedEntry.data)
 	})
 	delete main.q
 
 	// Expose the sdk interface.
-	window['BuffPanelSdk'] = processAction
+	window['BuffPanelSdk'] = action
 }
 
 // Ensure the initialization is triggered.

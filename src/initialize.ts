@@ -5,7 +5,7 @@ import * as utility from '.../src/utility'
 export const general = () => {
 	const reffererClickEventKey = utility.getQueryParameterByName('buffpanel_cek')
 	if (reffererClickEventKey) {
-		storage.general.refferer_click_event_key = reffererClickEventKey
+		storage.general.click_event_key = reffererClickEventKey
 	}
 }
 

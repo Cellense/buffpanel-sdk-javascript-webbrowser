@@ -1,3 +1,17 @@
+export const generateSearchParameters = (searchParameters: {
+	[name: string]: string,
+}) => {
+	const names = Object.keys(searchParameters)
+
+	if (names.length === 0) {
+		return ''
+	}
+
+	return '?' + names.map((name) => {
+		return `${name}=${searchParameters[name]}`
+	}).join('&')
+}
+
 export const getQueryParameterByName = (name) => {
 	const token = name.replace(/[\[\]]/g, '\\$&')
 	const regex = new RegExp(`[?&]${token}(=([^&#]*)|&|#|$)`)
