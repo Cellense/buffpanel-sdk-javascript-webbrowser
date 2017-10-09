@@ -14,10 +14,6 @@ export const general = () => {
 		}
 	}
 
-	// Process the tokens.
-	processDataValue('utm_game', 'game_token')
-	processDataValue('utm_campaign', 'campaign_token')
-
 	// Process the event keys.
 	processDataValue('buffpanel_cek', 'click_event_key')
 	processDataValue('buffpanel_rek', 'run_event_key')

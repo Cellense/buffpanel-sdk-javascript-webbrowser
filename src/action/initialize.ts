@@ -13,6 +13,11 @@ export default (data: {
 	click_event_key?: string,
 	run_event_key?: string,
 } = {}) => {
+	// Validate the sent data.
+	if ((typeof data !== 'object') || (data === null)) {
+		throw new Error('The parameters must be sent as an object.')
+	}
+
 	// Define a unified data value extractor.
 	const processDataValue = (validation: (value: any) => boolean, key: string) => {
 		// Check if key is set.

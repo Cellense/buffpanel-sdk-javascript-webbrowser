@@ -15,6 +15,11 @@ export default (inputObject: object, validationConfig: {
 		optional?: boolean,
 	},
 }) => {
+	// Validate the sent data.
+	if ((typeof inputObject !== 'object') || (inputObject === null)) {
+		throw new Error('The parameters must be sent as an object.')
+	}
+
 	return Object.keys(validationConfig).reduce((acc, name) => {
 		if (!nonEmptyString(name)) {
 			throw new Error('The validation configuration is invalid.')
