@@ -1,16 +1,14 @@
 // Load app modules.
-import { redirectionHostname } from '.../src/constant'
+import constant from '.../src/constant'
+import inputProcessor from '.../src/input_processor'
 import { general as generalStorage } from '.../src/storage'
 import {
 	generateSearchParameters,
 	sendRequestImg,
 } from '.../src/utility'
-import {
-	nonEmptyString as validateNonEmptyString,
-	stringToStringObject as validateStringToStringObject,
-} from '.../src/validate'
+import * as validate from '.../src/validate'
 
-export default (data : {
+export default (data: {
 	game_token?: string,
 	campaign_token?: string,
 	measurement_url_token?: string,
@@ -19,48 +17,34 @@ export default (data : {
 	},
 	callback?: (err?: object) => void,
 } = {}) => {
-	// Extract the inputs.
-	const gameToken = data.game_token
-		? data.game_token
-		: generalStorage.game_token
-	const campaignToken = data.campaign_token
-		? data.campaign_token
-		: generalStorage.campaign_token
-	const measurementUrlToken = data.measurement_url_token
-		? data.measurement_url_token
-		: generalStorage.measurement_url_token
-	const attributes = data.attributes
-		? data.attributes
-		: {}
+	// Extract and validate the inputs.
+	const inputs = inputProcessor(data, {
+		game_token: {
+			validator: validate.nonEmptyString,
+			default: generalStorage.game_token,
+		},
+		campaign_token: {
+			validator: validate.nonEmptyString,
+			default: generalStorage.campaign_token,
+		},
+		measurement_url_token: {
+			validator: validate.nonEmptyString,
+			default: generalStorage.measurement_url_token,
+		},
+		attributes: {
+			validator: validate.stringToNonEmptyStringObject,
+			default: {},
+		},
+		callback: {
+			validator: validate.functionObject,
+			optional: true,
+		},
+	}) as typeof data
 
-	// Validate the inputs.
-	if (!validateNonEmptyString(gameToken)) {
-		throw new Error('The "game_token" parameter is invalid')
-	}
-	if (!validateNonEmptyString(campaignToken)) {
-		throw new Error('The "campaign_token" parameter is invalid')
-	}
-	if (!validateNonEmptyString(measurementUrlToken)) {
-		throw new Error('The "measurement_url_token" parameter is invalid')
-	}
-	if (!validateStringToStringObject(attributes)) {
-		throw new Error('The "attributes" parameter is invalid')
-	}
-	if (data.callback) {
-		if (typeof data.callback !== 'function') {
-			throw new Error('The "callback" parameter must be a function')
-		}
-	}
-
-	// Prepare the request url
-	const url = `http://${gameToken}.${redirectionHostname}/${campaignToken}/${measurementUrlToken}` + generateSearchParameters(attributes)
-
-	// Send the request.
-	sendRequestImg(url, (err?: object) => {
-		if (data.callback) {
-			data.callback(err)
-		} else if (err) {
-			throw err
-		}
-	})
+	// Prepare and send the request.
+	sendRequestImg(`http://${inputs.game_token}.${constant.redirectionHostname}/${inputs.campaign_token}/${inputs.measurement_url_token}`
+		+ generateSearchParameters({
+			...inputs.attributes as { [key: string]: string },
+			sdk_version: constant.sdkVersion,
+		}), inputs.callback)
 }

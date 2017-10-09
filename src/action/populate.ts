@@ -1,14 +1,31 @@
 // Load app modules.
 import * as storage from '.../src/storage'
-import * as utility from '.../src/utility'
+import { getSearchParameter } from '.../src/utility'
 
+/**
+ * Populates the general storage data.
+ */
 export const general = () => {
-	const reffererClickEventKey = utility.getQueryParameterByName('buffpanel_cek')
-	if (reffererClickEventKey) {
-		storage.general.click_event_key = reffererClickEventKey
+	// Define a unified data value extractor.
+	const processDataValue = (searchParameterName: string, storageName: string) => {
+		const value = getSearchParameter(searchParameterName)
+		if ((value !== null) && (value !== '')) {
+			storage.general[storageName] = value
+		}
 	}
+
+	// Process the tokens.
+	processDataValue('utm_game', 'game_token')
+	processDataValue('utm_campaign', 'campaign_token')
+
+	// Process the event keys.
+	processDataValue('buffpanel_cek', 'click_event_key')
+	processDataValue('buffpanel_rek', 'run_event_key')
 }
 
+/**
+ * Populates the google analytics integration data.
+ */
 export const googleAnalytics = () => {
 	const googleAnalyticsObj = window['ga']
 	if (!googleAnalyticsObj) {
@@ -37,6 +54,9 @@ export const googleAnalytics = () => {
 	storage.googleAnalytics.client_id = tracker.get('clientId')
 }
 
+/**
+ * Populates the facebook pixel integration data.
+ */
 export const facebookPixel = () => {
 	const facebookPixelObj = window['fbq']
 	if (!facebookPixelObj) {
@@ -55,6 +75,9 @@ export const facebookPixel = () => {
 	storage.facebookPixel.pixel_id = Object.keys(instance.pixelsByID)[0]
 }
 
+/**
+ * Calls all populate methods.
+ */
 export default () => {
 	general()
 	googleAnalytics()

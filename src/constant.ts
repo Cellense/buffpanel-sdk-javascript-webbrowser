@@ -1,5 +1,7 @@
-export const redirectionHostname = 'trbt.it'
-
-export const apiHostname = 'api.buffpanel.com'
-
-export const apiUrlBase = `https://${apiHostname}`
+// Declare the statically compiled constants and export in a single object.
+declare const _constant_: {
+	apiHostname: string,
+	redirectionHostname: string,
+	sdkVersion: string,
+}
+export default _constant_

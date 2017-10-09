@@ -13,6 +13,7 @@ export default (data: {
 	click_event_key?: string,
 	run_event_key?: string,
 } = {}) => {
+	// Define a unified data value extractor.
 	const processDataValue = (validation: (value: any) => boolean, key: string) => {
 		// Check if key is set.
 		if (key in data) {
