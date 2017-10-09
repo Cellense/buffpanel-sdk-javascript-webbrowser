@@ -1,11 +1,14 @@
-# OS specific files.
-.DS_Store
-Thumbs.db
+# Build generated files.
+dist/*
+
+# Config files file.
+.env
 
 # NPM generated files.
 node_modules/*
 npm-debug.log*
 package-lock.json
 
-# Build generated files.
-dist/*
+# OS specific files.
+.DS_Store
+Thumbs.db
