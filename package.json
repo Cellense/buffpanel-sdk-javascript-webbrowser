@@ -9,7 +9,7 @@
   "scripts": {
     "build": "webpack",
     "deploy": "git checkout . && git checkout master && git pull && npm i && mkdir -p dist/web_sdk && npm run build",
-    "lint": "tslint {./,src/**/}*.ts --type-check --project ./tsconfig.json",
+    "lint": "tslint {./,src/**/}*.ts --project ./tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "validate": "npm run lint && npm run build && npm test"
   },
@@ -17,7 +17,7 @@
     "type": "git",
     "url": "git+https://github.com/Cellense/buffpanel-sdk-javascript-webbrowser.git"
   },
-  "author": "Osama Hassanein <osama.hassanein@cellense.com>",
+  "author": "Osama Hassanein <osama.hassanein@buffpanel.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Cellense/buffpanel-sdk-javascript-webbrowser/issues"
