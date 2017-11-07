@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import * as storage from '.../src/storage'
 import { getSearchParameter } from '.../src/utility'
 

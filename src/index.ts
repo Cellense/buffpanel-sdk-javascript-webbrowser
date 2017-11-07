@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import action from '.../src/action'
 import populate from '.../src/action/populate'
 

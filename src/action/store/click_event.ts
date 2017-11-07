@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import updateClickEventAction from '.../src/action/update/click_event'
 import * as storage from '.../src/storage'
 

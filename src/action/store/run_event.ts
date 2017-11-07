@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import updateRunEventAction from '.../src/action/update/run_event'
 import * as storage from '.../src/storage'
 

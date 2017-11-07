@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import constant from '.../src/constant'
 import inputProcessor from '.../src/input_processor'
 import { general as generalStorage } from '.../src/storage'

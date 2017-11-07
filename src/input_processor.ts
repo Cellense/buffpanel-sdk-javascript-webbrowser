@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import { nonEmptyString } from '.../src/validate'
 
 /**

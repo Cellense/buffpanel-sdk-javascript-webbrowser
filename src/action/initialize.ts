@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import { general as generalStorage } from '.../src/storage'
 import {
 	nonEmptyString as validateNonEmptyString,

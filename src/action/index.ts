@@ -1,4 +1,4 @@
-// Load app modules.
+// Load local modules.
 import createClickEvent from '.../src/action/create/click_event'
 import createRunEvent from '.../src/action/create/run_event'
 import initialize from '.../src/action/initialize'
