@@ -90,14 +90,6 @@ export const sendRequestXhr = (
 	// Create the xhr object.
 	const xhr = new XMLHttpRequest()
 
-	// Set the HTTP request headers and ensure the correct content type is set if a payload is to be sent.
-	Object.keys(headers).forEach((headerName) => {
-		xhr.setRequestHeader(headerName, headers[headerName])
-	})
-	if (payload !== undefined) {
-		xhr.setRequestHeader('Content-type', 'application/json')
-	}
-
 	// Set an event callback for the ready state change event.
 	xhr.onreadystatechange = () => {
 		if (xhr.readyState !== XMLHttpRequest.DONE) {
@@ -119,5 +111,14 @@ export const sendRequestXhr = (
 
 	// Open an async HTTP connection using the specified paramaters and send the request payload.
 	xhr.open(method, url, true, options.user, options.password)
+
+	// Set the HTTP request headers and ensure the correct content type is set if a payload is to be sent.
+	Object.keys(headers).forEach((headerName) => {
+		xhr.setRequestHeader(headerName, headers[headerName])
+	})
+	if (payload !== undefined) {
+		xhr.setRequestHeader('Content-type', 'application/json')
+	}
+
 	xhr.send(payload)
 }
