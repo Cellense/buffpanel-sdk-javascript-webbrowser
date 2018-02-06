@@ -40,7 +40,7 @@ The collected data is sent to the BuffPanel service and stored for the given use
 
 The following syntax is always used to call a command:
 
-```
+```js
 BuffPanelSdk(<command_name>, <command_data>);
 ```
 
@@ -57,7 +57,7 @@ The following is a list of all available commands with a description of their pu
 Used to populate the SDK's **storage** with implicit data and with data from any detected 3rd party services.
 
 The following code snippet executes the command:
-```
+```js
 BuffPanelSdk('populate');
 ```
 
@@ -70,7 +70,7 @@ This command is automatically executed as soon as the library is loaded and so i
 Used to set values in the SDK's **storage**. These may be later used as implicit parameters if an entry is missing in a command's data object to simplify the command calls.
 
 The following code snippet executes the command:
-```
+```js
 BuffPanelSdk('initialize', {
 	game_token: 'example_game', // Non-empty string (optional).
 	campaign_token: 'example_campaign_token', // Non-empty string (optional).
@@ -86,7 +86,7 @@ BuffPanelSdk('initialize', {
 Used to trigger a click event creation against the redirection endpoint of the BuffPanel service.
 
 The following code snippet executes the command:
-```
+```js
 BuffPanelSdk('redirection_click_event', {
 	game_token: 'example_game', // Non-empty string (optional, default = storage.game_token).
 	campaign_token: 'example_campaign_token', // Non-empty string (optional, default = storage.campaign_token).
